@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rock Paper Scissors</title>
+  <style>
+    button {
+      font-size: 1.2rem;
+      margin: 10px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+    #result {
+      font-size: 1.5rem;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Rock Paper Scissors</h1>
+
+  <button onclick="playGame('Rock')">Rock</button>
+  <button onclick="playGame('Paper')">Paper</button>
+  <button onclick="playGame('Scissors')">Scissors</button>
+  <button onclick="ResetGame()">Reset Game</button>
+
+  <div id="result"></div>
+
+  <script>
+
+    const Moves = {
+      Rock: 1,
+      Paper: 2,
+      Scissors: 3
+    };
+
+
+    let Score = JSON.parse(localStorage.getItem('score')) || {
+      Wins: 0,
+      Looses: 0,
+      Draws: 0
+    }
+
+    function pickPcMove() {
+      const rand = Math.ceil(Math.random() * 3);
+
+      for (let move in Moves) {
+        if (Moves[move] === rand) return move;  // returns "Rock", "Paper", or "Scissors"
+      }
+    }
+
+    function playGame(playerMove) {
+      const pcMove = pickPcMove();
+      let result = '';
+
+      if (playerMove === pcMove) {
+        result = "It's a draw!";
+        Score.Draws++;
+      } 
+      else if (
+        (playerMove === 'Rock' && pcMove === 'Scissors') ||
+        (playerMove === 'Paper' && pcMove === 'Rock') ||
+        (playerMove === 'Scissors' && pcMove === 'Paper')
+      ) {
+        result = "You win!";
+        Score.Wins++;
+      } else {
+        result = "PC wins!";
+        Score.Looses++;
+      }
+      localStorage.setItem('score', JSON.stringify(Score));      
+
+      document.getElementById('result').innerText = 
+        `You picked ${playerMove}, PC picked ${pcMove}. ${result}
+        Wins: ${Score.Wins}, Looses: ${Score.Looses}, Draws: ${Score.Draws}`;
+    }
+
+    function ResetGame() {
+      Score.Wins = 0;
+      Score.Looses = 0;
+      Score.Draws = 0;
+      localStorage.removeItem('score');
+
+            document.getElementById('result').innerText = 
+        `Scores Are Reset
+        Wins: ${Score.Wins}, Looses: ${Score.Looses}, Draws: ${Score.Draws}`;
+    }
+
+    // JSON : JavaScript Object Notation it holds string, numbers, objects, no functions (use double quotes), it holds the data as string
+    // JS Object : is the a variable that holds string, numbers, objects, functions (use single quaotes)
+
+    // JSON.stringify() convert JS  Object To JSON (to string)
+    // Json.parse() Convert JSON (string) Back To JS Object
+
+
+
+  </script>
+
+</body>
+</html>
